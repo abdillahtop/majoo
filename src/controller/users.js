@@ -174,7 +174,7 @@ module.exports = {
       if (req.file === undefined) {
         const validate = await userModels.getUserbyUsername(req.body.username)
         console.log(JSON.stringify(validate))
-        if (validate[0].user_name === req.body.username) {
+        if (checkUser[0].user_name === req.body.username) {
           const data = {
             user_name: req.body.username,
             full_name: req.body.name,
@@ -234,20 +234,19 @@ module.exports = {
 
   deleteUser: async (req, res) => {
     const checkusername = await userModels.getUserbyUserId(req.user_id)
-    console.log(req.user_id)
-    console.log(checkusername)
     if (checkusername[0] === undefined) {
       wrapper.response(res, 'User not found', 204)
     }
     if (checkusername[0].user_name == req.params.username) {
       wrapper.response(res, 'You cannot delete your account', 400)
-    }
-    userModels.delete(req.params.username)
+    } else {
+      userModels.delete(req.params.username)
       .then(() => {
         wrapper.response(res, 'user has been delete', 200)
       })
       .catch((err) => {
         wrapper.response(res, err, 400)
       })
+    }
   }
 }
